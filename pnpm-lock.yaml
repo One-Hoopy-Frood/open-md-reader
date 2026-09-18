@@ -258,8 +258,8 @@ importers:
         specifier: ^9.0.2
         version: 9.0.2
       '@tsconfig/svelte':
-        specifier: ^3.0.0
-        version: 3.0.0
+        specifier: ^5.0.8
+        version: 5.0.8
       '@types/chrome':
         specifier: ^0.0.196
         version: 0.0.196
@@ -307,13 +307,13 @@ importers:
         version: 9.0.4
       svelte-preprocess:
         specifier: ^6.0.5
-        version: 6.0.5(less@4.1.3(supports-color@8.1.1))(postcss@8.4.16)(svelte@5.57.0)(typescript@4.8.2)
+        version: 6.0.5(less@4.1.3(supports-color@8.1.1))(postcss@8.4.16)(svelte@5.57.0)(typescript@5.9.3)
       svg-loader:
         specifier: ^0.0.2
         version: 0.0.2
       typescript:
-        specifier: ^4.8.2
-        version: 4.8.2
+        specifier: ^5.9.3
+        version: 5.9.3
       webpack:
         specifier: ^5.74.0
         version: 5.74.0(esbuild@0.15.7)(webpack-cli@4.10.0)
@@ -544,8 +544,8 @@ packages:
   '@traptitech/markdown-it-katex@3.6.0':
     resolution: {integrity: sha512-CnJzTWxsgLGXFdSrWRaGz7GZ1kUUi8g3E9HzJmeveX1YwVJavrKYqysktfHZQsujdnRqV5O7g8FPKEA/aeTkOQ==}
 
-  '@tsconfig/svelte@3.0.0':
-    resolution: {integrity: sha512-pYrtLtOwku/7r1i9AMONsJMVYAtk3hzOfiGNekhtq5tYBGA7unMve8RvUclKLMT3PrihvJqUmzsRGh0RP84hKg==}
+  '@tsconfig/svelte@5.0.8':
+    resolution: {integrity: sha512-UkNnw1/oFEfecR8ypyHIQuWYdkPvHiwcQ78sh+ymIiYoF+uc5H1UBetbjyqT+vgGJ3qQN6nhucJviX6HesWtKQ==}
 
   '@types/chrome@0.0.196':
     resolution: {integrity: sha512-LAjGIQYC0wyiYu6lVT03dBrHBfYTMsM8EmNfQ+UdZipGZe8OUiir6weoa9oQoBw3T3RLzBCp9m904T+rFtpPAg==}
@@ -2316,9 +2316,9 @@ packages:
   tslib@2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
 
-  typescript@4.8.2:
-    resolution: {integrity: sha512-C0I1UsrrDHo2fYI5oaCGbSejwX4ch+9Y5jTQELvovfmFkK3HHSZJB8MSJcWLmCUBzQBchCrZ9rMRV6GuNrvGtw==}
-    engines: {node: '>=4.2.0'}
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
     hasBin: true
 
   uc.micro@1.0.6:
@@ -2765,7 +2765,7 @@ snapshots:
     dependencies:
       katex: 0.16.2
 
-  '@tsconfig/svelte@3.0.0': {}
+  '@tsconfig/svelte@5.0.8': {}
 
   '@types/chrome@0.0.196':
     dependencies:
@@ -4549,13 +4549,13 @@ snapshots:
       '@smui/top-app-bar': 9.0.2
       '@smui/touch-target': 9.0.2
 
-  svelte-preprocess@6.0.5(less@4.1.3(supports-color@8.1.1))(postcss@8.4.16)(svelte@5.57.0)(typescript@4.8.2):
+  svelte-preprocess@6.0.5(less@4.1.3(supports-color@8.1.1))(postcss@8.4.16)(svelte@5.57.0)(typescript@5.9.3):
     dependencies:
       svelte: 5.57.0
     optionalDependencies:
       less: 4.1.3(supports-color@8.1.1)
       postcss: 8.4.16
-      typescript: 4.8.2
+      typescript: 5.9.3
 
   svelte@5.57.0:
     dependencies:
@@ -4613,7 +4613,7 @@ snapshots:
 
   tslib@2.4.0: {}
 
-  typescript@4.8.2: {}
+  typescript@5.9.3: {}
 
   uc.micro@1.0.6: {}
 
