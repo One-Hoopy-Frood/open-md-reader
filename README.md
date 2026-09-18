@@ -1,3 +1,5 @@
+[![Build](https://github.com/One-Hoopy-Frood/open-md-reader/actions/workflows/build.yml/badge.svg)](https://github.com/One-Hoopy-Frood/open-md-reader/actions/workflows/build.yml)
+
 # Open Markdown Reader
 
 ## A browser plugin to read .md and some other formats
