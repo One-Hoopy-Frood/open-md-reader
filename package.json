@@ -1,22 +1,15 @@
 {
-  "name": "md-reader",
-  "version": "2.12.12",
-  "author": "Bener",
+  "name": "open-md-reader",
+  "version": "1.0.0",
+  "author": "Chris Chirdon",
   "license": "MIT",
-  "description": "A markdown reader extension for chrome",
-  "homepage": "https://md-reader.github.io",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Heroor/md-reader.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Heroor/md-reader/issues"
-  },
+  "description": "A markdown reader browser extension. Fork of Markdown Reader 2.x.",
   "keywords": [
-    "md-reader",
+    "open-md-reader",
     "markdown",
     "markdown reader",
-    "chrome extension"
+    "chrome extension",
+    "fork"
   ],
   "scripts": {
     "dev": "webpack --config ./build/webpack.dev.js",
@@ -26,7 +19,7 @@
     "build:zip": "node ./scripts/zip.mjs",
     "lint": "prettier --write --ignore-unknown",
     "preinstall": "node ./scripts/preinstall.mjs",
-    "prepare": "husky install"
+    "format": "prettier --write --ignore-unknown ."
   },
   "devDependencies": {
     "@nuxt/friendly-errors-webpack-plugin": "^2.5.2",
@@ -39,10 +32,8 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.1",
     "esbuild-loader": "^2.20.0",
-    "husky": "^8.0.1",
     "less": "^4.1.3",
     "less-loader": "^11.0.0",
-    "lint-staged": "^13.0.3",
     "mini-css-extract-plugin": "^2.6.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
@@ -85,10 +76,13 @@
     "markdown-it-task-lists": "^2.1.1",
     "svelte": "^3.50.0"
   },
-  "lint-staged": {
-    "**/*": "npm run lint"
-  },
   "engines": {
     "node": ">=16.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "svelte-preprocess"
+    ]
   }
 }

@@ -11,6 +11,7 @@ export interface Data {
   pageTheme?: typeof PAGE_THEMES[0]
   hiddenSide?: boolean
   customCss?: string
+  forceCustomCss?: boolean
 }
 
 export function getDefaultData(mergeData: Data = {}): Data {
@@ -23,6 +24,7 @@ export function getDefaultData(mergeData: Data = {}): Data {
     mdPlugins: [...MD_PLUGINS],
     pageTheme: PAGE_THEMES[0],
     customCss: '',
+    forceCustomCss: true,
     ...mergeData,
   }
 }

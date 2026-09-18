@@ -1,0 +1,35 @@
+# Normalise line endings.
+#
+# Without this, files flip between CRLF and LF depending on whether they
+# came from a git clone, a downloaded zip, or an editor save. That churn
+# showed up as "every file modified" in diffs. Git now stores LF and
+# checks out whatever the platform wants.
+* text=auto
+
+# Always LF in the working tree for these, since webpack, prettier and
+# the shell care and CRLF can break shebangs and heredocs.
+*.ts    text eol=lf
+*.js    text eol=lf
+*.mjs   text eol=lf
+*.json  text eol=lf
+*.less  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.svelte text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+
+# Windows-only scripts need CRLF.
+*.ps1   text eol=crlf
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Never touch binaries.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.zip   binary

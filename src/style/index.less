@@ -393,57 +393,117 @@ body.md-reader {
 // ===============================================================
 // Open-md-reader fork overrides
 //
-// The upstream @md-reader/theme package styles h2 with a
-// bottom hairline (src/theme.less: "h2 { padding-bottom: 8px;
-// border-bottom: 1px solid var(--border-color); }") and gives
-// hr a visible top border. Both are inherited through the
-// .theme() mixin invoked above in .md-reader__markdown-content.
+// SPECIFICITY NOTE, this matters:
+// The bundled theme's rules land at (0,3,2) because .theme() is
+// nested inside
+//   body.md-reader > .md-reader__body > .md-reader__markdown-content
+// The heading block below reproduces that exact ancestor chain on
+// purpose, so it ties on specificity and wins purely on source
+// order, being later in the same file.
 //
-// Because this block comes after that invocation in source
-// order, and carries higher specificity, it wins the cascade.
-// Keeping it at the end of the file rather than editing the
-// theme package means pnpm install can never clobber it.
+// Nothing here is forced with a priority flag, deliberately. Forcing
+// it would outrank the Custom CSS panel and make that feature
+// useless for these properties.
 // ===============================================================
 
 body.md-reader {
-  .md-reader__markdown-content {
+  .md-reader__body {
+    .md-reader__markdown-content {
 
-    // Remove the h2 hairline. h1 has no border upstream, but it
-    // is listed here so the rule survives any future theme
-    // version that adds one.
-    h1,
-    h2 {
-      border-bottom: none !important;
-      padding-bottom: 0 !important;
+      // Kill the h2 hairline. h1 carries no border upstream but is
+      // listed so the rule survives a future theme that adds one.
+      h1,
+      h2 {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+
+      // Without the hairline, h2 needs its own spacing to stay
+      // visually distinct from the paragraph above it.
+      h2 {
+        margin-top: 1.8rem;
+        margin-bottom: 0.6rem;
+      }
+
+      // Horizontal rules. Pick ONE of the three.
+
+      // (1) DEFAULT: no rule at all, and no leftover gap.
+      hr {
+        display: none;
+      }
+
+      // (2) Keep the semantic break as whitespace, no visible line.
+      // hr {
+      //   border: none;
+      //   margin: 2.7rem 0;
+      // }
+
+      // (3) Keep a faint line.
+      // hr {
+      //   border: none;
+      //   border-top: 1px solid var(--color-border);
+      //   opacity: 0.35;
+      //   margin: 2rem 0;
+      // }
     }
+  }
 
-    // Without the hairline, h2 needs its own breathing room to
-    // stay visually distinct from the paragraph above it.
-    h2 {
-      margin-top: 1.8rem;
-      margin-bottom: 0.6rem;
+  // ---- toolbar buttons added by this fork -----------------------
+  // The existing --code-toggle sits at right: 16px. These slot in
+  // beside it, moving leftward.
+  .md-reader__btn {
+    &--copy-content {
+      position: absolute;
+      right: 54px;
+      svg.icon-copy {
+        display: initial;
+      }
+      svg.icon-success {
+        color: var(--color-success);
+        display: none;
+      }
+      &.copied {
+        svg.icon-copy {
+          display: none;
+        }
+        svg.icon-success {
+          display: initial;
+        }
+      }
     }
-
-    // Horizontal rules. Upstream sets border-top plus 2.7rem
-    // margins. Pick ONE of the three blocks below.
-
-    // (1) DEFAULT: hide hr entirely.
-    hr {
-      display: none !important;
+    &--print {
+      position: absolute;
+      right: 92px;
     }
+  }
+}
 
-    // (2) Keep hr but make it faint. Comment out (1) to use.
-    // hr {
-    //   border: none !important;
-    //   border-top: 1px solid var(--color-border) !important;
-    //   opacity: 0.35;
-    //   margin: 2rem 0 !important;
-    // }
-
-    // (3) Keep hr as generous whitespace with no visible line.
-    // hr {
-    //   border: none !important;
-    //   margin: 2.7rem 0 !important;
-    // }
+// ---- print ------------------------------------------------------
+// Upstream already hides the button wrap when printing. These rules
+// add the rest: drop the heading anchor links, which otherwise print
+// as a stray blue hash whenever the cursor happens to be resting on
+// a heading, and reclaim the horizontal space the fixed sidebar
+// reserves so the text is not indented by 260px on paper.
+@media print {
+  body.md-reader {
+    .md-reader__side,
+    .md-reader__button-wrap {
+      display: none;
+    }
+    .md-reader__body {
+      --side-width: 0px;
+      padding-left: 0;
+      .md-reader__markdown-content {
+        padding: 0;
+        .md-reader__head-anchor {
+          display: none;
+        }
+      }
+      // Matches the .centered rule's specificity so the print width
+      // actually takes effect.
+      .md-reader__markdown-content.centered {
+        max-width: none;
+      }
+    }
   }
 }

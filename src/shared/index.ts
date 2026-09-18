@@ -78,6 +78,52 @@ export function writeText(text: string): Promise<void> {
   return Promise.resolve()
 }
 
+/**
+ * Copy rich content to the clipboard, so a paste into a word processor
+ * keeps headings, bold, lists and tables rather than arriving as plain
+ * text. Uses the same selection plus execCommand route as writeText,
+ * which populates both text/html and text/plain flavours. The async
+ * Clipboard API is avoided deliberately, matching writeText above.
+ */
+export async function writeRichText(html: string): Promise<void> {
+  /* Preferred path. Puts both flavours on the clipboard explicitly and
+     does not depend on document.execCommand, which is deprecated. Needs
+     a secure context and a user gesture, both of which hold when this
+     runs from a button click. */
+  if (typeof ClipboardItem === 'function' && navigator.clipboard?.write) {
+    try {
+      const plain = document.createElement('div')
+      plain.innerHTML = html
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': new Blob([html], { type: 'text/html' }),
+          'text/plain': new Blob([plain.innerText], { type: 'text/plain' }),
+        }),
+      ])
+      return
+    } catch (err) {
+      /* fall through to the selection route below */
+    }
+  }
+
+  const holder = document.createElement('div')
+  holder.setAttribute('aria-hidden', 'true')
+  holder.style.cssText = [
+    'position:fixed',
+    'top:0',
+    'left:0',
+    'width:1px',
+    'height:1px',
+    'overflow:hidden',
+    'opacity:0',
+    'pointer-events:none',
+  ].join(';')
+  holder.innerHTML = html
+  BODY.appendChild(holder)
+  copy(holder)
+  BODY.removeChild(holder)
+}
+
 function copy(ele: HTMLElement) {
   const sel = getSelection()
   sel.removeAllRanges()

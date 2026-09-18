@@ -52,6 +52,7 @@ const actionMap = {
   pageTheme: 'updatePageTheme',
   hiddenSide: 'toggleSide',
   customCss: 'updateCustomCss',
+  forceCustomCss: 'toggleForceCustomCss',
 }
 
 function updatePage(key: keyof typeof actionMap, value?: any) {
@@ -59,10 +60,10 @@ function updatePage(key: keyof typeof actionMap, value?: any) {
   action &&
     chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
       tabs.length &&
-        chrome.tabs.sendMessage(tabs[0].id, { action, data: { key, value } })
+        chrome.tabs.sendMessage(
+          tabs[0].id,
+          { action, data: { key, value } },
+          () => void chrome.runtime.lastError,
+        )
     })
 }
-
-chrome.runtime.setUninstallURL(
-  'https://github.com/orgs/md-reader/discussions/51',
-)

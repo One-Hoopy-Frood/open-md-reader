@@ -6,16 +6,13 @@
   import Radio from '@smui/radio'
   import Switch from '@smui/switch'
   import FormField from '@smui/form-field'
-  import Select, { Option } from '@smui/select'
   import Chip, { Set, Text } from '@smui/chips'
   import MD_PLUGINS from '@/config/md-plugins'
   import PAGE_THEMES from '@/config/page-themes'
   import { getDefaultData, type Data } from '@/core/data'
-  import pkg from '../../../package.json'
   import i18n from '@/config/i18n'
 
   let localize = i18n()
-  let homepage = pkg.homepage
   let isAllowViewFile = true
   let data = getDefaultData()
 
@@ -28,11 +25,6 @@
     // need an assignment to updata UI
     data = { ...data, ..._data }
   })
-
-  $: if (data.language) {
-    updateConfig('language', data.language)
-    changeLocale(data.language)
-  }
 
   function updateConfig(key, value) {
     setTimeout(() => {
@@ -49,14 +41,10 @@
     updateCustomCss.cancel()
     updateConfig('customCss', '')
   }
-
-  function changeLocale(language) {
-    localize = i18n(language)
-  }
 </script>
 
 <main>
-  <Header {homepage} />
+  <Header />
 
   {#if !isAllowViewFile}
     <Warning {localize} />
@@ -133,10 +121,24 @@
         class="css-input"
         spellcheck="false"
         disabled={!data.enable}
-        placeholder={'h2 { border-bottom: none; }\nhr { display: none; }'}
+        placeholder={'h2 { color: teal; }\ntable { font-size: 13px; }'}
         bind:value={data.customCss}
         on:input={() => data.enable && updateCustomCss(data.customCss)}
       />
+      <div class="css-force">
+        <FormField>
+          <span slot="label" class="css-force-label">
+            {localize('label_force-custom-css')}
+          </span>
+          <Switch
+            disabled={!data.enable}
+            bind:checked={data.forceCustomCss}
+            color="primary"
+            on:change={() =>
+              updateConfig('forceCustomCss', data.forceCustomCss)}
+          />
+        </FormField>
+      </div>
     </div>
 
     <div class="form-item">
@@ -152,17 +154,6 @@
           />
         </FormField>
       {/each}
-    </div>
-
-    <div class="form-item">
-      <div class="label-item">{localize('label_language')}:</div>
-      <FormField style="padding-left: 10px">
-        <Select bind:value={data.language}>
-          {#each i18n.locales as locale}
-            <Option value={locale}>{localize(locale)}</Option>
-          {/each}
-        </Select>
-      </FormField>
     </div>
   </div>
 </main>
@@ -243,5 +234,13 @@
   }
   .css-input::placeholder {
     color: #24315870;
+  }
+  .css-force {
+    margin-top: 2px;
+  }
+  .css-force-label {
+    font-weight: normal;
+    font-size: 11.5px;
+    color: #243158b0;
   }
 </style>

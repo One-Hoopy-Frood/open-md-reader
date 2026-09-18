@@ -1,12 +1,11 @@
 <script>
   import Icon from './icon.svelte'
   import logoIcon from '@/images/logo-stroke.svg'
-  export let homepage
 </script>
 
 <h1>
   <Icon class="icon-logo" svg={logoIcon} />
-  <a href={homepage} target="__blank">MD-READER</a>
+  <span>OPEN MD READER</span>
 </h1>
 
 <style>
@@ -18,15 +17,10 @@
     font-size: 18px;
     color: #35363a;
   }
-  h1 a {
+  h1 span {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    text-decoration: none;
-    color: currentColor;
-  }
-  h1 a:hover {
-    text-decoration: underline;
   }
   h1 :global(.icon-logo) {
     width: 22px;

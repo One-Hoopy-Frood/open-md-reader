@@ -14,6 +14,8 @@ export default {
   SIDE_EXPAND_BTN: p`btn--side-expand`,
   GO_TOP_BTN: p`btn--go-top`,
   COPY_BTN: p`btn--copy`,
+  COPY_CONTENT_BTN: p`btn--copy-content`,
+  PRINT_BTN: p`btn--print`,
   SIDE_COLLAPSED: 'side-collapsed',
   SIDE_EXPANDED: 'side-expanded',
   MODAL: p`modal`,

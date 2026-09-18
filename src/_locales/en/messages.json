@@ -1,11 +1,11 @@
 {
   "ext_name": {
-    "message": "MD Reader",
-    "description": "A markdown reader extension for Chrome."
+    "message": "Open MD Reader",
+    "description": "A markdown reader browser extension."
   },
   "ext_desc": {
-    "message": "A markdown reader extension for Chrome.",
-    "description": "Support view file://, http://, https:// URL and *.md, *.mkd, *.markdown extension files."
+    "message": "Read and preview markdown files in your browser, with custom CSS.",
+    "description": "Supports file://, http://, https:// URLs and .md, .mkd, .mdx, .markdown files."
   },
   "command_toggle_side": {
     "message": "Toggle side"

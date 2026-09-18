@@ -1,6 +1,11 @@
 The MIT License (MIT)
 
 Copyright (c) 2018-present Bener
+  Original work: Markdown Reader, https://github.com/md-reader/md-reader
+  This project is a fork of the last MIT-licensed release (2.12.12).
+
+Copyright (c) 2026 Chris Chirdon
+  Modifications made in Open Markdown Reader.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

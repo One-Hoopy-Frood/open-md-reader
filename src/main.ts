@@ -17,10 +17,14 @@ import {
   darkMediaQuery,
   getMediaQueryTheme,
   toTheme,
+  writeRichText,
 } from '@/shared'
 import codeIcon from '@/images/icon_code.svg'
 import sideIcon from '@/images/icon_side.svg'
 import goTopIcon from '@/images/icon_go_top.svg'
+import copyIcon from '@/images/icon_copy.svg'
+import successIcon from '@/images/icon_success.svg'
+import printIcon from '@/images/icon_print.svg'
 import '@/style/index.less'
 
 function main(data: Data) {
@@ -56,10 +60,25 @@ function main(data: Data) {
     updateCustomCss(value: string) {
       applyCustomCss(value)
     },
+    toggleForceCustomCss() {
+      applyCustomCss(configData.customCss)
+    },
   }
+  /* Guards the listener below. Every action except 'reload' closes over
+     state that only exists once main() gets past the early return, so
+     dispatching before then throws a temporal dead zone error. */
+  let initialized: boolean = false
+
   chrome.runtime.onMessage.addListener(({ action, data: { key, value } }) => {
     const oldValue = configData[key]
     configData[key] = value
+    /* 'reload' is the action bound to the enable switch. It only calls
+       window.location.reload, so it is safe and must still work while
+       the extension is switched off, otherwise turning it back on could
+       not take effect. */
+    if (!initialized && action !== 'reload') {
+      return
+    }
     actions[action]?.(value, oldValue)
   })
 
@@ -206,6 +225,46 @@ function main(data: Data) {
     e.preventDefault()
     return false
   }
+  /* render copy-formatted button */
+  const copyContentBtn = new Ele<HTMLElement>(
+    'button',
+    {
+      className: [className.MD_BUTTON, className.COPY_CONTENT_BTN],
+      title: 'Copy formatted',
+    },
+    [
+      svg(copyIcon, { className: 'icon-copy' }),
+      svg(successIcon, { className: 'icon-success' }),
+    ],
+  )
+  copyContentBtn.on('click', async () => {
+    if (copyContentBtn.classList.contains('copied')) {
+      return
+    }
+    /* Clone so the heading anchors and per-block copy buttons can be
+       stripped without touching what is on screen. */
+    const clone = mdContent.ele.cloneNode(true) as HTMLElement
+    clone
+      .querySelectorAll(
+        `.${className.HEAD_ANCHOR}, .${className.COPY_BTN}, .${className.MD_BUTTON}`,
+      )
+      .forEach(node => node.remove())
+    await writeRichText(clone.innerHTML)
+    copyContentBtn.classList.add('copied')
+    setTimeout(() => copyContentBtn.classList.remove('copied'), 1200)
+  })
+
+  /* render print button */
+  const printBtn = new Ele<HTMLElement>(
+    'button',
+    {
+      className: [className.MD_BUTTON, className.PRINT_BTN],
+      title: 'Print',
+    },
+    svg(printIcon),
+  )
+  printBtn.on('click', () => window.print())
+
   /* render go top button */
   const goTopBtn = new Ele<HTMLElement>(
     'button',
@@ -221,7 +280,7 @@ function main(data: Data) {
   const buttonWrap = new Ele<HTMLElement>(
     'div',
     { className: className.BUTTON_WRAP_ELE },
-    [sideExpandBtn, rawToggleBtn, goTopBtn],
+    [sideExpandBtn, rawToggleBtn, copyContentBtn, printBtn, goTopBtn],
   )
 
   /* mount elements */
@@ -241,6 +300,9 @@ function main(data: Data) {
   if (configData.refresh) {
     polling()
   }
+
+  /* everything the actions depend on now exists */
+  initialized = true
 
   function polling() {
     void (function watch() {
@@ -373,7 +435,52 @@ function main(data: Data) {
       customStyleEle.setAttribute('data-md-reader-custom-css', '')
       HEAD.appendChild(customStyleEle)
     }
+    /* Always reassign from source. Re-parsing clears any priority flags
+       added on a previous pass, so toggling the option off really does
+       drop back to normal declarations. */
     customStyleEle.textContent = css || ''
+    if (configData.forceCustomCss) {
+      forceImportant(customStyleEle.sheet)
+    }
+  }
+
+  /* Raise every declaration in the user's stylesheet to important.
+     Done through the CSSOM rather than by rewriting the text, so the
+     browser has already parsed the CSS. That keeps semicolons inside
+     quoted values, comments, and url() from breaking anything, and it
+     reaches declarations nested inside @media, @supports, @layer, and
+     native CSS nesting. */
+  function forceImportant(sheet: CSSStyleSheet) {
+    if (!sheet) {
+      return
+    }
+    const walk = (rules: CSSRuleList) => {
+      Array.from(rules).forEach((rule: CSSRule) => {
+        if (rule instanceof CSSStyleRule) {
+          const style = rule.style
+          /* snapshot the names first, we are mutating as we iterate */
+          Array.from(style).forEach(name => {
+            if (!style.getPropertyPriority(name)) {
+              style.setProperty(name, style.getPropertyValue(name), 'important')
+            }
+          })
+        }
+        /* grouping rules, and style rules that use CSS nesting, both
+           carry child rules. Keyframe rules are deliberately skipped:
+           they are not CSSStyleRule and a priority flag is invalid
+           inside @keyframes. */
+        const nested = (rule as CSSGroupingRule).cssRules
+        if (nested) {
+          walk(nested)
+        }
+      })
+    }
+    try {
+      walk(sheet.cssRules)
+    } catch (err) {
+      /* cssRules can throw on a sheet the page is not allowed to read */
+      console.warn('md-reader: could not force custom CSS priority', err)
+    }
   }
 
   function updateAnchorPosition() {
