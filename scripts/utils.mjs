@@ -3,6 +3,8 @@ import { URL } from 'node:url'
 
 export const url = (path, base = import.meta.url) => new URL(path, base)
 
+// pnpm sets both of these when running a script from package.json.
+export const pkgName = process.env.npm_package_name
 export const version = process.env.npm_package_version
 export const newVersion = version
   .split('.')
