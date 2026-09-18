@@ -1,4 +1,5 @@
 <script lang="ts">
+  import debounce from 'lodash.debounce'
   import storage from '@/core/storage'
   import Warning from './warning.svelte'
   import Header from './header.svelte'
@@ -37,6 +38,16 @@
     setTimeout(() => {
       chrome.runtime.sendMessage({ action: 'storage', data: { key, value } })
     }, 0)
+  }
+
+  const updateCustomCss = debounce((value: string) => {
+    updateConfig('customCss', value)
+  }, 400)
+
+  function resetCustomCss() {
+    data.customCss = ''
+    updateCustomCss.cancel()
+    updateConfig('customCss', '')
   }
 
   function changeLocale(language) {
@@ -107,6 +118,28 @@
     </div>
 
     <div class="form-item">
+      <div class="label-item css-head">
+        <span>{localize('label_custom-css')}:</span>
+        {#if data.customCss}
+          <button
+            class="reset-btn"
+            type="button"
+            disabled={!data.enable}
+            on:click={resetCustomCss}>reset</button
+          >
+        {/if}
+      </div>
+      <textarea
+        class="css-input"
+        spellcheck="false"
+        disabled={!data.enable}
+        placeholder={'h2 { border-bottom: none; }\nhr { display: none; }'}
+        bind:value={data.customCss}
+        on:input={() => data.enable && updateCustomCss(data.customCss)}
+      />
+    </div>
+
+    <div class="form-item">
       <div class="label-item">{localize('label_theme')}:</div>
       {#each PAGE_THEMES as mode}
         <FormField>
@@ -156,5 +189,59 @@
     font-weight: bolder;
     font-size: 13px;
     color: #243158e3;
+  }
+  .css-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .reset-btn {
+    font: inherit;
+    font-weight: normal;
+    font-size: 11px;
+    padding: 1px 7px;
+    color: #243158b0;
+    background: #2431580d;
+    border: 1px solid #24315826;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .reset-btn:hover:not(:disabled) {
+    color: #243158e3;
+    background: #24315817;
+  }
+  .reset-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .css-input {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    min-height: 84px;
+    max-height: 260px;
+    resize: vertical;
+    padding: 7px 9px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    tab-size: 2;
+    color: #243158e3;
+    background: #fbfbfd;
+    border: 1px solid #24315833;
+    border-radius: 3px;
+  }
+  .css-input:focus {
+    outline: none;
+    border-color: #607cd2;
+    background: #fff;
+  }
+  .css-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+  .css-input::placeholder {
+    color: #24315870;
   }
 </style>

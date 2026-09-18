@@ -9,6 +9,7 @@ import type { Theme } from '@/config/page-themes'
 import { getDefaultData, type Data } from '@/core/data'
 import { mdRender, type MdOptions } from '@/core/markdown'
 import {
+  HEAD,
   getHeads,
   getRawContainer,
   setTheme,
@@ -52,6 +53,9 @@ function main(data: Data) {
     toggleSide() {
       onToggleSide()
     },
+    updateCustomCss(value: string) {
+      applyCustomCss(value)
+    },
   }
   chrome.runtime.onMessage.addListener(({ action, data: { key, value } }) => {
     const oldValue = configData[key]
@@ -68,11 +72,13 @@ function main(data: Data) {
   let mdRaw: string = null
   let isSideHover: boolean = false
   let globalEvent: Event = new Event()
+  let customStyleEle: HTMLStyleElement = null
 
   initPlugins({ event: globalEvent })
 
   /* init md page */
   setTheme(configData.pageTheme)
+  applyCustomCss(configData.customCss)
   document.body.classList.toggle(
     className.SIDE_COLLAPSED,
     configData.hiddenSide,
@@ -355,6 +361,19 @@ function main(data: Data) {
         renderSide()
       }
     }
+  }
+
+  /* user stylesheet, injected last so it outranks the bundled theme */
+  function applyCustomCss(css: string) {
+    if (!customStyleEle) {
+      if (!css) {
+        return
+      }
+      customStyleEle = document.createElement('style')
+      customStyleEle.setAttribute('data-md-reader-custom-css', '')
+      HEAD.appendChild(customStyleEle)
+    }
+    customStyleEle.textContent = css || ''
   }
 
   function updateAnchorPosition() {

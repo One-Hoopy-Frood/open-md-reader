@@ -51,6 +51,7 @@ const actionMap = {
   mdPlugins: 'updateMdPlugins',
   pageTheme: 'updatePageTheme',
   hiddenSide: 'toggleSide',
+  customCss: 'updateCustomCss',
 }
 
 function updatePage(key: keyof typeof actionMap, value?: any) {
