@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      # Reads the "packageManager" field in package.json and installs that
+      # exact pnpm version, so CI and local builds agree.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # --frozen-lockfile makes the build fail if package.json and
+      # pnpm-lock.yaml disagree, which catches a dependency change that was
+      # committed without the updated lockfile.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the extension
+        run: pnpm build:extension
+
+      # Fails loudly if the build silently produced nothing.
+      - name: Verify build output
+        run: |
+          test -f extension/manifest.json
+          test -f extension/js/content.js
+          test -f extension/js/background.js
+          test -f extension/css/content.css
+          test -f extension/popup.html
+          echo "Build output looks complete."
+
+      - name: Upload unpacked extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: open-md-reader-unpacked
+          path: extension/
+          if-no-files-found: error

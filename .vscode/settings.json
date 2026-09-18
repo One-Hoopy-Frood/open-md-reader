@@ -1,0 +1,16 @@
+{
+  "//": "Point the editor at the TypeScript the project pins (4.8.2) instead of the one bundled with VS Code. Without this, a newer bundled compiler reports TS 7.0 deprecation errors for baseUrl and moduleResolution=node that the pinned version does not care about. The build never runs tsc at all, esbuild-loader strips types, so these were editor-only noise.",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.eol": "\n",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/extension": true,
+    "**/dist": true,
+    "pnpm-lock.yaml": true
+  }
+}

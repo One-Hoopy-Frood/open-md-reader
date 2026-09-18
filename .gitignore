@@ -1,9 +1,40 @@
+# Build output
 dist
 extension
-node_modules
 extension.crx
 extension.pem
+
+# Dependencies
+node_modules
+
+# Archives and the partial files archivers leave behind.
+# *.zip alone missed open-md-reader.zip.tmp, which is how a 55MB
+# artifact containing node_modules ended up committed.
 *.zip
-.vscode/settings.json
+*.zip.tmp
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Editor and OS
 .idea
 .fleet
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor settings are committed on purpose, see CONTRIBUTING.md.
+# They pin the TypeScript version the editor uses, which otherwise
+# reports deprecation errors the pinned compiler does not care about.
+# .vscode/settings.json
