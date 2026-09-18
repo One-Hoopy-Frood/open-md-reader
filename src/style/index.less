@@ -389,3 +389,61 @@ body.md-reader {
     }
   }
 }
+
+// ===============================================================
+// Open-md-reader fork overrides
+//
+// The upstream @md-reader/theme package styles h2 with a
+// bottom hairline (src/theme.less: "h2 { padding-bottom: 8px;
+// border-bottom: 1px solid var(--border-color); }") and gives
+// hr a visible top border. Both are inherited through the
+// .theme() mixin invoked above in .md-reader__markdown-content.
+//
+// Because this block comes after that invocation in source
+// order, and carries higher specificity, it wins the cascade.
+// Keeping it at the end of the file rather than editing the
+// theme package means pnpm install can never clobber it.
+// ===============================================================
+
+body.md-reader {
+  .md-reader__markdown-content {
+
+    // Remove the h2 hairline. h1 has no border upstream, but it
+    // is listed here so the rule survives any future theme
+    // version that adds one.
+    h1,
+    h2 {
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
+    // Without the hairline, h2 needs its own breathing room to
+    // stay visually distinct from the paragraph above it.
+    h2 {
+      margin-top: 1.8rem;
+      margin-bottom: 0.6rem;
+    }
+
+    // Horizontal rules. Upstream sets border-top plus 2.7rem
+    // margins. Pick ONE of the three blocks below.
+
+    // (1) DEFAULT: hide hr entirely.
+    hr {
+      display: none !important;
+    }
+
+    // (2) Keep hr but make it faint. Comment out (1) to use.
+    // hr {
+    //   border: none !important;
+    //   border-top: 1px solid var(--color-border) !important;
+    //   opacity: 0.35;
+    //   margin: 2rem 0 !important;
+    // }
+
+    // (3) Keep hr as generous whitespace with no visible line.
+    // hr {
+    //   border: none !important;
+    //   margin: 2.7rem 0 !important;
+    // }
+  }
+}
