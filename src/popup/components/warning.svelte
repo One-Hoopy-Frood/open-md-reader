@@ -1,5 +1,8 @@
 <script lang="ts">
-  export let localize: (field: string) => string
+  // Svelte 5: export let becomes $props(). This component still compiled
+  // under legacy mode, but converting it means no component in the project
+  // relies on the old API.
+  let { localize }: { localize: (field: string) => string } = $props()
 </script>
 
 <div class="warning">

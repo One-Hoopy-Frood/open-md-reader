@@ -13,15 +13,23 @@ body {
   margin-right: 16px;
 }
 
+/* Unselected chips are dimmed. */
 .mdc-chip {
   opacity: 0.54;
 }
 
+/* The filter checkmark is hidden, so the rule below is the only signal
+   that a chip is selected. If it ever stops matching, every chip looks
+   unselected, which is exactly what happened when the selector depended
+   on a disabled attribute Svelte 5 no longer renders. */
 .mdc-chip .mdc-chip__checkmark {
   display: none;
 }
 
-.form[disabled='false'] .mdc-chip.mdc-chip--selected {
+/* Was .form[disabled='false'], which relied on Svelte 4 rendering
+   disabled="false" on a div. Svelte 5 removes falsy boolean attributes, so
+   this is now driven by a class instead. */
+.form:not(.form--disabled) .mdc-chip.mdc-chip--selected {
   background-color: var(--mdc-theme-primary);
   color: #fff;
   opacity: 1;

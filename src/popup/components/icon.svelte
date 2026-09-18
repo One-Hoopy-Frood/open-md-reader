@@ -1,7 +1,8 @@
 <script>
-  export let svg
-  let className
-  export { className as class }
+  // Svelte 5: export let plus the export { x as class } trick becomes a
+  // single $props() destructure. "class" is a reserved word, so it is
+  // renamed on the way in.
+  let { svg, class: className } = $props()
 </script>
 
 <svg {...svg.attributes} class={className}>
